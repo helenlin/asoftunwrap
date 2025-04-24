@@ -2,6 +2,10 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { FirstPersonControls } from "./FirstPersonControls.js";
 
+let artworks = []; 
+
+
+
 // create variables and make them available globally
 let scene, myRenderer, camera;
 let textureLoader;
@@ -22,23 +26,23 @@ function setupMySocket(){
 
 function addModels() {
   let modelLoader = new GLTFLoader();
-  let url = "assets/sm/bears.glb";
+  let url = "assets/sm/gardenofoysters.glb";
 
   modelLoader.load(url, placeBear);
 }
 
 function placeBear(gltf) {
   let mesh = gltf.scene;
-  //mesh.position.set(2, 0, 2);
-  //mesh.scale.set(5, 5, 5);
+  mesh.position.set(2, 0, 2);
+  mesh.scale.set(1, 1, 1);
   
   // create our texture and load in an image file
-  let baseColor = new THREE.Color("rgb(0,0,0)");
+  //let baseColor = new THREE.Color("rgb(0,0,0)");
   
   // create a normal texture
-  let normColor = textureLoader.load("assets/mat/Watermarked_normal.png");
+  //let normColor = textureLoader.load("assets/mat/Watermarked_normal.png");
   
-  mesh.material = new THREE.MeshPhongMaterial( {map: baseColor, normalMap: normColor} );
+  //mesh.material = new THREE.MeshPhongMaterial( {map: baseColor, normalMap: normColor} );
   
   scene.add(mesh);
 
@@ -46,7 +50,7 @@ function placeBear(gltf) {
 
 function createNewMesh(msg){
 
-  //addModels();
+  addModels();
   let geo = new THREE.SphereGeometry(0.25, 20, 20);
   let mat = new THREE.MeshNormalMaterial();
   let newMesh = new THREE.Mesh(geo, mat);

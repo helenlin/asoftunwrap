@@ -26,7 +26,7 @@ function onConnection(socket){
 }
 
 function onMessage(msg){
-  console.log('We received a message from one of the sockets:');
-  console.log(msg);
+  //console.log('We received a message from one of the sockets:');
+  //console.log(msg);
   io.emit('msg', msg);
 }
