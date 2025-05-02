@@ -6,9 +6,29 @@
         margin: 0;
         padding: 0;
       }
+
+      canvas {
+        z-index: 0;
+      }
+
+      #popupText {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: white;
+        color: black;
+        padding: 15px;
+        font-family: sans-serif;
+        display: none; /* hidden by default */
+        z-index: 10;
+        max-width: 300px;
+      }
+
+
     </style> </head>
   <body>
 
+    <div id="popupText"></div>
 
     <script type="importmap">
       {

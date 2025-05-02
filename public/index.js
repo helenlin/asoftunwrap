@@ -2,7 +2,8 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { FirstPersonControls } from "./FirstPersonControls.js";
 
-let artworks = []; 
+
+
 
 
 
@@ -11,6 +12,31 @@ let scene, myRenderer, camera;
 let textureLoader;
 // keep track of which frame we are on
 let frameCount = 0;
+
+let artworks = [
+  {
+      "url": "assets/sm/gardenofoysters.glb", 
+      "sizeX": 1,
+      "sizeY": 1,
+      "sizeZ": 1,
+      "x": 1, 
+      "y": 1, 
+      "z": 1, 
+      "title": "garden of oysters", 
+      "walltext": "title: garden of oysters\nartist: helen lin"
+  }
+]
+
+
+// wall text variables
+const popupText = document.getElementById('popupText');
+let textVisible = false;
+
+
+
+
+
+
 
 let viewers = [];
 
@@ -25,32 +51,31 @@ function setupMySocket(){
 }
 
 function addModels() {
-  let modelLoader = new GLTFLoader();
-  let url = "assets/sm/gardenofoysters.glb";
 
-  modelLoader.load(url, placeBear);
+  for (let i = 0; i < artworks.length; i++) {
+
+    console.log(artworks[i].url);
+
+    
+    let modelLoader = new GLTFLoader();
+    let myUrl = artworks[i].url;
+    modelLoader.load(myUrl, function ( gltf ) {
+    
+      let mesh = gltf.scene;
+      mesh.position.set(artworks[i].x, artworks[i].y, artworks[i].z);
+      mesh.position.set(artworks[i].sizeX, artworks[i].sizeY, artworks[i].sizeZ);
+      
+      scene.add(mesh);
+    
+    
+    });
+
+  
+  }
 }
 
-function placeBear(gltf) {
-  let mesh = gltf.scene;
-  mesh.position.set(2, 0, 2);
-  mesh.scale.set(1, 1, 1);
-  
-  // create our texture and load in an image file
-  //let baseColor = new THREE.Color("rgb(0,0,0)");
-  
-  // create a normal texture
-  //let normColor = textureLoader.load("assets/mat/Watermarked_normal.png");
-  
-  //mesh.material = new THREE.MeshPhongMaterial( {map: baseColor, normalMap: normColor} );
-  
-  scene.add(mesh);
+function createNewAvatar(msg){
 
-}
-
-function createNewMesh(msg){
-
-  addModels();
   let geo = new THREE.SphereGeometry(0.25, 20, 20);
   let mat = new THREE.MeshNormalMaterial();
   let newMesh = new THREE.Mesh(geo, mat);
@@ -64,7 +89,7 @@ function createNewMesh(msg){
 }
 
 function updateLocation(msg){
-  console.log(msg);
+  //console.log(msg);
   let myMesh;
   for(let i = 0; i < viewers.length; i++){
     if (viewers[i].id == msg.id) { 
@@ -73,7 +98,7 @@ function updateLocation(msg){
     }
   }
   if (myMesh == null) {
-    createNewMesh(msg);
+    createNewAvatar(msg);
   }
   
 }
@@ -97,7 +122,6 @@ function onKeyDown(ev){
 }
 
 function init() {
-
 
   // create a scene and give it a background color
   scene = new THREE.Scene();
@@ -133,10 +157,16 @@ function init() {
 
   let wallMesh1 = new THREE.Mesh(wallGeo, regMat);
   wallMesh1.position.set(6,5,6);
+  wallMesh1.layers.enable(3);
   let wallMesh2 = new THREE.Mesh(wallGeo, regMat);
   wallMesh2.position.set(6,5,-6);
+  wallMesh2.layers.enable(3);
   scene.add(wallMesh1);
   scene.add(wallMesh2);
+
+  // Add artwork models
+  addModels();
+
 
   // add websocket support
   setupMySocket();
@@ -149,7 +179,6 @@ function init() {
   let directionalLight = new THREE.DirectionalLight(0xffffff, 1);
   scene.add(directionalLight);
 
-
   window.addEventListener('keydown', onKeyDown);
 
   // start the draw loop
@@ -160,7 +189,7 @@ function draw() {
   controls.update();
   frameCount = frameCount + 1;
 
-
+  checkTrigger(); 
   
   let myMessage = {
     id: socket.id,
@@ -179,3 +208,48 @@ function draw() {
 
 // get everything started by calling init
 init();
+
+
+
+
+
+
+
+
+
+
+
+function checkTrigger() {
+  // Check if camera is inside the trigger box
+
+  let camX = camera.position.x; 
+  let camY = camera.position.y;
+  let camZ = camera.position.z;
+  let tDist = 3;
+
+
+  for (let i = 0; i < artworks.length; i++) {
+    let item = artworks[i];
+
+    if (
+      camX >= item.x-tDist && camX <= item.x+tDist &&
+      camY >= item.y-tDist && camY <= item.y+tDist &&
+      camZ >= item.z-tDist && camZ <= item.z+tDist
+    ) {
+      if (!textVisible) {
+        let wText = item.walltext;
+        popupText.innerHTML = wText.replace(/\n/g, "<br>");;
+        popupText.style.display = 'block';
+        textVisible = true;
+        break;
+      }
+    } else {
+      if (textVisible) {
+        popupText.style.display = 'none';
+        textVisible = false;
+      }
+    }
+
+  }
+
+}
