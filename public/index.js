@@ -12,18 +12,44 @@ let scene, myRenderer, camera;
 let textureLoader;
 // keep track of which frame we are on
 let frameCount = 0;
+let avatarMesh = null; 
+let mouse;
+let pointerDown = false; // keep track of whether the mouse pointer is down
+let shiftDown = false;
 
 let artworks = [
+  // {
+  //     "url": "assets/sm/gardenofoysters.glb", 
+  //     "sizeX": 1,
+  //     "sizeY": 1,
+  //     "sizeZ": 1,
+  //     "x": 1, 
+  //     "y": 1, 
+  //     "z": 1, 
+  //     "title": "garden of oysters", 
+  //     "walltext": "title: garden of oysters\nartist: helen lin"
+  // }
+  // {
+  //   "url": "assets/sm/fusign.glb", 
+  //   "sizeX": 2,
+  //   "sizeY": 2,
+  //   "sizeZ": 2,
+  //   "x": 30, 
+  //   "y": 1, 
+  //   "z": 1, 
+  //   "title": "dotted fu sign", 
+  //   "walltext": "title: dottedfusign\nartist: helen lin"
+  // },
   {
-      "url": "assets/sm/gardenofoysters.glb", 
-      "sizeX": 1,
-      "sizeY": 1,
-      "sizeZ": 1,
-      "x": 1, 
-      "y": 1, 
-      "z": 1, 
-      "title": "garden of oysters", 
-      "walltext": "title: garden of oysters\nartist: helen lin"
+    "url": "assets/sm/canyoutake.glb", 
+    "sizeX": 2,
+    "sizeY": 2,
+    "sizeZ": 2,
+    "x": -30, 
+    "y": 1, 
+    "z": 1, 
+    "title": "can you grab these on the way in, pt. i", 
+    "walltext": "title: can you grab these on the way in, pt. i\nartist: helen lin"
   }
 ]
 
@@ -48,6 +74,7 @@ let socket;
 function setupMySocket(){
   socket = io();
   socket.on('msg', updateLocation);
+
 }
 
 function addModels() {
@@ -63,7 +90,7 @@ function addModels() {
     
       let mesh = gltf.scene;
       mesh.position.set(artworks[i].x, artworks[i].y, artworks[i].z);
-      mesh.position.set(artworks[i].sizeX, artworks[i].sizeY, artworks[i].sizeZ);
+      mesh.scale.set(artworks[i].sizeX, artworks[i].sizeY, artworks[i].sizeZ);
       
       scene.add(mesh);
     
@@ -74,11 +101,82 @@ function addModels() {
   }
 }
 
+
+// function addOtherPersonsDrawing(x, y, z) {
+//   let mesh = new THREE.Mesh(geo, mat);
+//   scene.add(mesh);
+//   mesh.position.set(x, y, z);
+//   mesh.castShadow = true;
+// }
+
+// function setupRaycastInteraction() {
+//   mouse = new THREE.Vector2(0, 0);
+
+//   // create a geometry and material which we'll reuse for each newly created mesh
+//   let geo = new THREE.IcosahedronGeometry(0.25, 0);
+//   let mat = new THREE.MeshPhongMaterial({ color: "red" });
+
+//   document.addEventListener(
+//     "pointermove",
+//     (ev) => {
+//       // three.js expects 'normalized device coordinates' (i.e. between -1 and 1 on both axes)
+//       mouse.x = (ev.clientX / window.innerWidth) * 2 - 1;
+//       mouse.y = -(ev.clientY / window.innerHeight) * 2 + 1;
+
+//       if (pointerDown) {
+//         raycaster.setFromCamera(mouse, camera);
+
+//         const intersects = raycaster.intersectObject(ground);
+
+//         if (intersects.length) {
+//           let point = intersects[0].point;
+//           console.log(point);
+//           socket.emit("msg", point);
+
+//           // add our own
+//           let mesh = new THREE.Mesh(geo, mat);
+//           scene.add(mesh);
+//           mesh.position.set(point.x, point.y, point.z);
+//           mesh.castShadow = true;
+//         }
+//       }
+//     },
+//     false
+//   );
+
+//   let raycaster = new THREE.Raycaster();
+//   document.addEventListener("pointerdown", (ev) => {
+//     pointerDown = true;
+//   });
+//   document.addEventListener("pointerup", (ev) => {
+//     pointerDown = false;
+//   });
+
+// }
+
+function loadAvatarModel() {
+  let modelLoader = new GLTFLoader();
+  let myUrl = "assets/sm/needle2.glb";
+  modelLoader.load(myUrl, function ( gltf ) {
+  
+    // lets us create a for each callback
+    gltf.scene.traverse((child) => {if (child.isMesh) {
+      avatarMesh = child;
+      }})
+
+    avatarMesh.scale.set(0.5, 0.5, 0.5);
+    console.log(avatarMesh.geometry);
+    //scene.add(avatarMesh);
+  });
+}
+
 function createNewAvatar(msg){
 
-  let geo = new THREE.SphereGeometry(0.25, 20, 20);
+  let geo = avatarMesh.geometry;
   let mat = new THREE.MeshNormalMaterial();
+
   let newMesh = new THREE.Mesh(geo, mat);
+
 
   viewers.push(
     {id: msg.id,
@@ -86,6 +184,7 @@ function createNewAvatar(msg){
 
   newMesh.position.set(msg.x,msg.y,msg.z);
   scene.add(newMesh);
+  console.log(scene.children);
 }
 
 function updateLocation(msg){
@@ -123,6 +222,8 @@ function onKeyDown(ev){
 
 function init() {
 
+  loadAvatarModel();
+
   // create a scene and give it a background color
   scene = new THREE.Scene();
   scene.background = new THREE.Color("rgb(20,20,20)");
@@ -148,7 +249,7 @@ function init() {
   // mesh
   let grid = new THREE.GridHelper(300, 100);
   scene.add(grid);
-  scene.background = new THREE.Color("rgb(186,230,190)");
+  scene.background = new THREE.Color("rgb(252, 220, 220)");
 
 
   // walls and space
@@ -191,14 +292,15 @@ function draw() {
 
   checkTrigger(); 
   
-  let myMessage = {
-    id: socket.id,
-    x: camera.position.x,
-    y: camera.position.y,
-    z: camera.position.z
-  };
-  socket.emit('msg', myMessage);
-
+  if (frameCount % 5 === 0) {
+    let myMessage = {
+      id: socket.id,
+      x: camera.position.x,
+      y: camera.position.y,
+      z: camera.position.z
+    };
+    socket.emit('msg', myMessage);
+  }
 
   myRenderer.render(scene, camera);
 
