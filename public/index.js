@@ -17,6 +17,18 @@ let mouse;
 let pointerDown = false; // keep track of whether the mouse pointer is down
 let shiftDown = false;
 
+const floorGeometry = new THREE.PlaneGeometry(1000, 1000); // width, height
+const floorMaterial = new THREE.MeshStandardMaterial({
+  color: 0xf5f1e4, // color
+  roughness: 1,    // matte look
+  metalness: 0     // not metallic
+});
+
+const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+floor.rotation.x = -Math.PI / 2; // Rotate to make it horizontal
+floor.position.y = -1;           // Lower it under your object
+floor.receiveShadow = true;      // Optional: receives shadows
+
 let artworks = [
   // {
   //     "url": "assets/sm/gardenofoysters.glb", 
@@ -27,7 +39,7 @@ let artworks = [
   //     "y": 1, 
   //     "z": 1, 
   //     "title": "garden of oysters", 
-  //     "walltext": "title: garden of oysters\nartist: helen lin"
+  //     "walltext": "title: garden of oysters\n\nartist: helen lin\n\ndescription: This soft sculpture painting was sewn together using digitally printed floral fabric. The fabric was cut up and rearranged into fleshy oyster bouquet, presents its treasured pearls to the viewer."
   // }
   // {
   //   "url": "assets/sm/fusign.glb", 
@@ -38,18 +50,40 @@ let artworks = [
   //   "y": 1, 
   //   "z": 1, 
   //   "title": "dotted fu sign", 
-  //   "walltext": "title: dottedfusign\nartist: helen lin"
+  //   "walltext": "title: dottedfusign\n\nartist: helen lin\n\ndescription: Fu signs are traditionally displayed on the front doors of Chinese households to bring in prosperity. This interpretation renders the traditionally red signifier of prosperity into white, a color typically reserved for funeral rites."
+  // },
+    // {
+  //   "url": "assets/sm/shortcake.glb", 
+  //   "sizeX": 2,
+  //   "sizeY": 2,
+  //   "sizeZ": 2,
+  //   "x": 30, 
+  //   "y": 1, 
+  //   "z": 1, 
+  //   "title": "you’re a shortcake and i am too", 
+  //   "walltext": "title: you’re a shortcake and i am too\n\nartist: helen lin\n\ndescription: Fleece pants and ruffle skirt scraps stretched over a canvas to create a painting with soft curves protruding out towards the viewer. Playful and nostalgic elementary school ornaments such as plastic star beads, zippers, lace, and frills from discarded girls' clothing decorate the two white bases."
+  // },
+    // {
+  //   "url": "assets/sm/fusign.glb", 
+  //   "sizeX": 2,
+  //   "sizeY": 2,
+  //   "sizeZ": 2,
+  //   "x": 30, 
+  //   "y": 1, 
+  //   "z": 1, 
+  //   "title": "dotted fu sign", 
+  //   "walltext": "title: dottedfusign\n\nartist: helen lin\n\ndescription: Fu signs are traditionally displayed on the front doors of Chinese households to bring in prosperity. This interpretation renders the traditionally red signifier of prosperity into white, a color typically reserved for funeral rites."
   // },
   {
     "url": "assets/sm/canyoutake.glb", 
-    "sizeX": 2,
-    "sizeY": 2,
-    "sizeZ": 2,
+    "sizeX": 4,
+    "sizeY": 4,
+    "sizeZ": 4,
     "x": -30, 
     "y": 1, 
     "z": 1, 
     "title": "can you grab these on the way in, pt. i", 
-    "walltext": "title: can you grab these on the way in, pt. i\nartist: helen lin"
+    "walltext": "title: can you grab these on the way in, pt. i\n\nartist: helen lin\n\ndescription: Repurposed fabric shopping bag from a Chinese supermarket in Flushing, folded and sewn using shibori fabric manipulation technique. Despite being constructed to serve as a sustainable alternative to plastic bags, this bag can often be found in landfills and littered across the streets of New York City. The time-intensive manipulation process turns this common item into something special. The title references the everyday action of asking a family member to help grab the bags of groceries on the way back into the house from the supermarket."
   }
 ]
 
@@ -164,8 +198,7 @@ function loadAvatarModel() {
       avatarMesh = child;
       }})
 
-    avatarMesh.scale.set(0.5, 0.5, 0.5);
-    console.log(avatarMesh.geometry);
+    //console.log(avatarMesh.geometry);
     //scene.add(avatarMesh);
   });
 }
@@ -173,16 +206,20 @@ function loadAvatarModel() {
 function createNewAvatar(msg){
 
   let geo = avatarMesh.geometry;
-  let mat = new THREE.MeshNormalMaterial();
+  let mat = new THREE.MeshStandardMaterial({
+    color: 0xe0e0e0,     // Light gray (silver-like)
+    //metalness: 1.0,       // Fully metallic
+    roughness: 0.2        // Some shine, not a mirror
+  });
 
   let newMesh = new THREE.Mesh(geo, mat);
-
+  newMesh.scale.set(0.25, 0.25, 0.25);
 
   viewers.push(
     {id: msg.id,
     mesh: newMesh});
 
-  newMesh.position.set(msg.x,msg.y,msg.z);
+  newMesh.position.set(msg.x,msg.y-0.5,msg.z);
   scene.add(newMesh);
   console.log(scene.children);
 }
@@ -193,7 +230,7 @@ function updateLocation(msg){
   for(let i = 0; i < viewers.length; i++){
     if (viewers[i].id == msg.id) { 
       myMesh = viewers[i].mesh;
-      myMesh.position.set(msg.x,msg.y,msg.z);
+      myMesh.position.set(msg.x,msg.y-0.5,msg.z);
     }
   }
   if (myMesh == null) {
@@ -247,9 +284,10 @@ function init() {
   controls = new FirstPersonControls(scene, camera, myRenderer);
 
   // mesh
-  let grid = new THREE.GridHelper(300, 100);
-  scene.add(grid);
+  //let grid = new THREE.GridHelper(300, 100);
+  //scene.add(grid);
   scene.background = new THREE.Color("rgb(252, 220, 220)");
+  scene.add(floor);
 
 
   // walls and space
