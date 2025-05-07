@@ -2,10 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { FirstPersonControls } from "./FirstPersonControls.js";
 
-
-
-
-
+const loader = new GLTFLoader();
 
 // create variables and make them available globally
 let scene, myRenderer, camera;
@@ -30,73 +27,79 @@ floor.position.y = -1;           // Lower it under your object
 floor.receiveShadow = true;      // Optional: receives shadows
 
 let artworks = [
-  // {
-  //     "url": "assets/sm/gardenofoysters.glb", 
-  //     "sizeX": 1,
-  //     "sizeY": 1,
-  //     "sizeZ": 1,
-  //     "x": 1, 
-  //     "y": 1, 
-  //     "z": 1, 
-  //     "title": "garden of oysters", 
-  //     "walltext": "title: garden of oysters\n\nartist: helen lin\n\ndescription: This soft sculpture painting was sewn together using digitally printed floral fabric. The fabric was cut up and rearranged into fleshy oyster bouquet, presents its treasured pearls to the viewer."
-  // }
-  // {
-  //   "url": "assets/sm/fusign.glb", 
-  //   "sizeX": 2,
-  //   "sizeY": 2,
-  //   "sizeZ": 2,
-  //   "x": 30, 
-  //   "y": 1, 
-  //   "z": 1, 
-  //   "title": "dotted fu sign", 
-  //   "walltext": "title: dottedfusign\n\nartist: helen lin\n\ndescription: Fu signs are traditionally displayed on the front doors of Chinese households to bring in prosperity. This interpretation renders the traditionally red signifier of prosperity into white, a color typically reserved for funeral rites."
-  // },
-    // {
-  //   "url": "assets/sm/shortcake.glb", 
-  //   "sizeX": 2,
-  //   "sizeY": 2,
-  //   "sizeZ": 2,
-  //   "x": 30, 
-  //   "y": 1, 
-  //   "z": 1, 
-  //   "title": "you’re a shortcake and i am too", 
-  //   "walltext": "title: you’re a shortcake and i am too\n\nartist: helen lin\n\ndescription: Fleece pants and ruffle skirt scraps stretched over a canvas to create a painting with soft curves protruding out towards the viewer. Playful and nostalgic elementary school ornaments such as plastic star beads, zippers, lace, and frills from discarded girls' clothing decorate the two white bases."
-  // },
-    // {
-  //   "url": "assets/sm/fusign.glb", 
-  //   "sizeX": 2,
-  //   "sizeY": 2,
-  //   "sizeZ": 2,
-  //   "x": 30, 
-  //   "y": 1, 
-  //   "z": 1, 
-  //   "title": "dotted fu sign", 
-  //   "walltext": "title: dottedfusign\n\nartist: helen lin\n\ndescription: Fu signs are traditionally displayed on the front doors of Chinese households to bring in prosperity. This interpretation renders the traditionally red signifier of prosperity into white, a color typically reserved for funeral rites."
-  // },
+   {
+       "url": "assets/sm/gardenofoysters.glb", 
+       "sizeX": 15,
+       "sizeY": 15,
+       "sizeZ": 15,
+       "x": -55, 
+       "y": 1, 
+       "z": 1, 
+       "rotation": 90,
+       "title": "garden of oysters", 
+       "walltext": "title: garden of oysters\n\nartist: helen lin\n\ndescription: This soft sculpture painting was sewn together using digitally printed floral fabric. The fabric was cut up and rearranged into fleshy oyster bouquet, presents its treasured pearls to the viewer."
+   },
+   {
+     "url": "assets/sm/milliondollarshirt.glb", 
+     "sizeX": 6,
+     "sizeY": 6,
+     "sizeZ": 6,
+     "x": 30, 
+     "y": 0, 
+     "z": 5, 
+     "rotation": 180,
+     "title": "million dollar shirt", 
+     "walltext": "title: million dollar shirtn\n\nartist: helen lin\n\ndescription: million dollar shirt is made with puff flowers and the spirit of friendship. You can't put a price on friendship, but if you did, it would be a million dollars."
+   },
+     {
+     "url": "assets/sm/shortcake.glb", 
+     "sizeX": 6,
+     "sizeY": 6,
+     "sizeZ": 6,
+     "x": 20, 
+     "y": 2, 
+     "z": -5, 
+     "rotation": 0,
+     "title": "you’re a shortcake and i am too", 
+     "walltext": "title: you’re a shortcake and i am too\n\nartist: helen lin\n\ndescription: Fleece pants and ruffle skirt scraps stretched over a canvas to create a painting with soft curves protruding out towards the viewer. Playful and nostalgic elementary school ornaments such as plastic star beads, zippers, lace, and frills from discarded girls' clothing decorate the two white bases."
+   },
+     {
+     "url": "assets/sm/fusign.glb", 
+     "sizeX": 10,
+     "sizeY": 10,
+     "sizeZ": 10,
+     "x": -10, 
+     "y": 1, 
+     "z": 5, 
+     "rotation": 180,
+     "title": "dotted fu sign", 
+     "walltext": "title: dottedfusign\n\nartist: helen lin\n\ndescription: Fu signs are traditionally displayed on the front doors of Chinese households to bring in prosperity. This interpretation renders the traditionally red signifier of prosperity into white, a color typically reserved for funeral rites."
+   },
   {
-    "url": "assets/sm/canyoutake.glb", 
-    "sizeX": 4,
-    "sizeY": 4,
-    "sizeZ": 4,
+    "url": "assets/sm/canyougrab.glb", 
+    "sizeX": 10,
+    "sizeY": 10,
+    "sizeZ": 10,
     "x": -30, 
     "y": 1, 
-    "z": 1, 
+    "z": -5, 
+    "rotation": 90,
     "title": "can you grab these on the way in, pt. i", 
     "walltext": "title: can you grab these on the way in, pt. i\n\nartist: helen lin\n\ndescription: Repurposed fabric shopping bag from a Chinese supermarket in Flushing, folded and sewn using shibori fabric manipulation technique. Despite being constructed to serve as a sustainable alternative to plastic bags, this bag can often be found in landfills and littered across the streets of New York City. The time-intensive manipulation process turns this common item into something special. The title references the everyday action of asking a family member to help grab the bags of groceries on the way back into the house from the supermarket."
   }
 ]
+
+let stitches = []; 
+let stitchGeo = new THREE.BoxGeometry(0.3, 0.05, 0.05);
+let stitchMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
 
 
 // wall text variables
 const popupText = document.getElementById('popupText');
 let textVisible = false;
 
-
-
-
-
-
+// Track typed letters
+let typed = '';
 
 let viewers = [];
 
@@ -108,6 +111,7 @@ let socket;
 function setupMySocket(){
   socket = io();
   socket.on('msg', updateLocation);
+  socket.on('cast', castStitch);
 
 }
 
@@ -125,7 +129,8 @@ function addModels() {
       let mesh = gltf.scene;
       mesh.position.set(artworks[i].x, artworks[i].y, artworks[i].z);
       mesh.scale.set(artworks[i].sizeX, artworks[i].sizeY, artworks[i].sizeZ);
-      
+      mesh.rotation.y = THREE.MathUtils.degToRad(artworks[i].rotation);
+      mesh.layers.enable(3);
       scene.add(mesh);
     
     
@@ -135,7 +140,6 @@ function addModels() {
   }
 }
 
-
 // function addOtherPersonsDrawing(x, y, z) {
 //   let mesh = new THREE.Mesh(geo, mat);
 //   scene.add(mesh);
@@ -143,50 +147,53 @@ function addModels() {
 //   mesh.castShadow = true;
 // }
 
-// function setupRaycastInteraction() {
-//   mouse = new THREE.Vector2(0, 0);
+ function setupRaycastInteraction() {
+   mouse = new THREE.Vector2(0, 0);
 
-//   // create a geometry and material which we'll reuse for each newly created mesh
-//   let geo = new THREE.IcosahedronGeometry(0.25, 0);
-//   let mat = new THREE.MeshPhongMaterial({ color: "red" });
+    //create a geometry and material which we'll reuse for each newly created mesh
+   let geo = new THREE.IcosahedronGeometry(0.25, 0);
+   let mat = new THREE.MeshPhongMaterial({ color: "red" });
 
-//   document.addEventListener(
-//     "pointermove",
-//     (ev) => {
-//       // three.js expects 'normalized device coordinates' (i.e. between -1 and 1 on both axes)
-//       mouse.x = (ev.clientX / window.innerWidth) * 2 - 1;
-//       mouse.y = -(ev.clientY / window.innerHeight) * 2 + 1;
+   document.addEventListener(
+     "pointermove",
+     (ev) => {
+        //three.js expects 'normalized device coordinates' (i.e. between -1 and 1 on both axes)
+       mouse.x = (ev.clientX / window.innerWidth) * 2 - 1;
+       mouse.y = -(ev.clientY / window.innerHeight) * 2 + 1;
 
-//       if (pointerDown) {
-//         raycaster.setFromCamera(mouse, camera);
+       if (pointerDown) {
+         raycaster.setFromCamera(mouse, camera);
 
-//         const intersects = raycaster.intersectObject(ground);
+         const intersects = raycaster.intersectObject(floor);
 
-//         if (intersects.length) {
-//           let point = intersects[0].point;
-//           console.log(point);
-//           socket.emit("msg", point);
+         if (intersects.length) {
+           let point = intersects[0].point;
+           console.log(point);
+           addStitch();
+           //socket.emit("msg", point);
 
-//           // add our own
-//           let mesh = new THREE.Mesh(geo, mat);
-//           scene.add(mesh);
-//           mesh.position.set(point.x, point.y, point.z);
-//           mesh.castShadow = true;
-//         }
-//       }
-//     },
-//     false
-//   );
+           /*
+           // add our own
+           let mesh = new THREE.Mesh(geo, mat);
+           scene.add(mesh);
+           mesh.position.set(point.x, point.y, point.z);
+           mesh.castShadow = true;
+           */
+         }
+       }
+     },
+     false
+   );
 
-//   let raycaster = new THREE.Raycaster();
-//   document.addEventListener("pointerdown", (ev) => {
-//     pointerDown = true;
-//   });
-//   document.addEventListener("pointerup", (ev) => {
-//     pointerDown = false;
-//   });
+   let raycaster = new THREE.Raycaster();
+   document.addEventListener("pointerdown", (ev) => {
+     pointerDown = true;
+   });
+   document.addEventListener("pointerup", (ev) => {
+     pointerDown = false;
+   });
 
-// }
+ }
 
 function loadAvatarModel() {
   let modelLoader = new GLTFLoader();
@@ -239,6 +246,23 @@ function updateLocation(msg){
   
 }
 
+function castStitch(msg){
+  console.log("stitchCast");
+  let stitchLeft = new THREE.Mesh(stitchGeo, stitchMat);
+  let stitchRight = new THREE.Mesh(stitchGeo, stitchMat);
+  stitchRight.rotation.z = Math.PI / 2;
+
+  let stitchGroup = new THREE.Group();
+  stitchGroup.add(stitchLeft);
+  stitchGroup.add(stitchRight);
+
+  stitchGroup.position.set(msg.x,msg.y-1,msg.z);
+  stitchGroup.rotation.set(Math.random() * Math.PI*2, 
+  Math.random() * Math.PI*2, 
+  Math.random() * Math.PI*2);
+  scene.add(stitchGroup);
+}
+
 function onKeyDown(ev){
   if ((ev.key === "w") ||
   (ev.key === "a") ||
@@ -257,9 +281,70 @@ function onKeyDown(ev){
   }
 }
 
+// Listen for keypress
+window.addEventListener('keydown', (e) => {
+  typed += e.key.toLowerCase();
+  if (!'cast'.startsWith(typed)) {
+    typed = e.key.toLowerCase() === 'c' ? 'c' : '';
+  }
+
+  if (typed === 'cast') {
+    let myMessage = {
+      id: socket.id,
+      x: camera.position.x,
+      y: camera.position.y,
+      z: camera.position.z
+    };
+    socket.emit('cast', myMessage);
+    typed = ''; // reset after success
+  }
+});
+
+
+// Handle resizing
+window.addEventListener('resize', () => {
+  myRenderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+function checkTrigger() {
+  // Check if camera is inside the trigger box
+
+  let camX = camera.position.x; 
+  let camY = camera.position.y;
+  let camZ = camera.position.z;
+  let tDist = 3;
+
+
+  for (let i = 0; i < artworks.length; i++) {
+    let item = artworks[i];
+
+    if (
+      camX >= item.x-tDist && camX <= item.x+tDist &&
+      camY >= item.y-tDist && camY <= item.y+tDist &&
+      camZ >= item.z-tDist && camZ <= item.z+tDist
+    ) {
+      if (!textVisible) {
+        let wText = item.walltext;
+        popupText.innerHTML = wText.replace(/\n/g, "<br>");;
+        popupText.style.display = 'block';
+        textVisible = true;
+        break;
+      }
+    } else {
+      if (textVisible) {
+        popupText.style.display = 'none';
+        textVisible = false;
+      }
+    }
+
+  }
+
+}
+
 function init() {
 
   loadAvatarModel();
+  setupRaycastInteraction();
 
   // create a scene and give it a background color
   scene = new THREE.Scene();
@@ -277,7 +362,7 @@ function init() {
     0.1,
     1000
   );
-  camera.position.set(-6, 0, 0);
+  camera.position.set(41, 0, 0);
   camera.lookAt(6, 0, 0);
 
   // add orbit controls so we can navigate our scene while testing
@@ -295,17 +380,59 @@ function init() {
   let regMat = new THREE.MeshBasicMaterial({ color: 0xffeae0 });
 
   let wallMesh1 = new THREE.Mesh(wallGeo, regMat);
-  wallMesh1.position.set(6,5,6);
-  wallMesh1.layers.enable(3);
   let wallMesh2 = new THREE.Mesh(wallGeo, regMat);
+  wallMesh1.position.set(6,5,6);
   wallMesh2.position.set(6,5,-6);
+
+  let wallMesh2ExtendGeo = new THREE.BoxGeometry(20,10,0.25);
+  let wallMesh2Extend = new THREE.Mesh(wallMesh2ExtendGeo, regMat);
+  let vertMeshGeo = new THREE.BoxGeometry(0.25,10,20);
+  let vertWallMesh1 = new THREE.Mesh(vertMeshGeo, regMat);
+  let vertWallMesh2 = new THREE.Mesh(vertMeshGeo, regMat);  
+  wallMesh2Extend.position.set(-50,5,6);
+  vertWallMesh1.position.set(-44, 5, -16);
+  vertWallMesh2.position.set(-56, 5, -16);
+
+  let backWallGeo = new THREE.BoxGeometry(0.25,10,20);
+  let backWall1 = new THREE.Mesh(backWallGeo, regMat);
+  let backWall2 = new THREE.Mesh(backWallGeo, regMat);
+  backWall1.position.set(50,5,0);
+  backWall2.position.set(-56,5,0);
+
+  let innerCylGeo = new THREE.CylinderGeometry(20, 20, 10, 45 );
+  let innerCylMesh = new THREE.Mesh(innerCylGeo, regMat);
+  innerCylMesh.position.set(-50, 5, -66);
+
+  let outerCylGeo = new THREE.CylinderGeometry(41, 41, 10, 45, 1,true
+  );
+  let outerCylMesh = new THREE.Mesh(outerCylGeo, regMat);
+  outerCylMesh.position.set(-50, 5, -66);
+  outerCylMesh.rotation.set(0, Math.PI, 0);
+
+  wallMesh1.layers.enable(3);
   wallMesh2.layers.enable(3);
+  wallMesh2Extend.layers.enable(3);
+  backWall1.layers.enable(3);
+  backWall2.layers.enable(3);
+  vertWallMesh1.layers.enable(3);
+  vertWallMesh2.layers.enable(3);  
+  innerCylMesh.layers.enable(3);  
+  outerCylMesh.layers.enable(3);  
+
   scene.add(wallMesh1);
   scene.add(wallMesh2);
+  scene.add(wallMesh2Extend);
+  scene.add(backWall1);
+  scene.add(backWall2);
+  scene.add(vertWallMesh1);
+  scene.add(vertWallMesh2);
+  scene.add(innerCylMesh);
+  scene.add(outerCylMesh);
+
+
 
   // Add artwork models
   addModels();
-
 
   // add websocket support
   setupMySocket();
@@ -358,38 +485,3 @@ init();
 
 
 
-
-function checkTrigger() {
-  // Check if camera is inside the trigger box
-
-  let camX = camera.position.x; 
-  let camY = camera.position.y;
-  let camZ = camera.position.z;
-  let tDist = 3;
-
-
-  for (let i = 0; i < artworks.length; i++) {
-    let item = artworks[i];
-
-    if (
-      camX >= item.x-tDist && camX <= item.x+tDist &&
-      camY >= item.y-tDist && camY <= item.y+tDist &&
-      camZ >= item.z-tDist && camZ <= item.z+tDist
-    ) {
-      if (!textVisible) {
-        let wText = item.walltext;
-        popupText.innerHTML = wText.replace(/\n/g, "<br>");;
-        popupText.style.display = 'block';
-        textVisible = true;
-        break;
-      }
-    } else {
-      if (textVisible) {
-        popupText.style.display = 'none';
-        textVisible = false;
-      }
-    }
-
-  }
-
-}

@@ -23,10 +23,17 @@ function onConnection(socket){
   console.log('This is their ID: ', socket.id);
 
   socket.on('msg', onMessage);
+  socket.on('cast', onCast);
 }
 
 function onMessage(msg){
   //console.log('We received a message from one of the sockets:');
   //console.log(msg);
   io.emit('msg', msg);
+}
+
+function onCast(msg){
+  //console.log('We received a message from one of the sockets:');
+  //console.log(msg);
+  io.emit('cast', msg);
 }
