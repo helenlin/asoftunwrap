@@ -28,16 +28,16 @@ floor.receiveShadow = true;      // Optional: receives shadows
 
 let artworks = [
    {
-       "url": "assets/sm/gardenofoysters.glb", 
-       "sizeX": 15,
-       "sizeY": 15,
-       "sizeZ": 15,
-       "x": -55, 
-       "y": 1, 
-       "z": 1, 
-       "rotation": 90,
-       "title": "garden of oysters", 
-       "walltext": "title: garden of oysters\n\nartist: helen lin\n\ndescription: This soft sculpture painting was sewn together using digitally printed floral fabric. The fabric was cut up and rearranged into fleshy oyster bouquet, presents its treasured pearls to the viewer."
+    "url": "assets/sm/gardenofoysters.glb", 
+    "sizeX": 15,
+    "sizeY": 15,
+    "sizeZ": 15,
+    "x": -55, 
+    "y": 1, 
+    "z": 1, 
+    "rotation": 90,
+    "title": "garden of oysters", 
+    "walltext": "title: garden of oysters\n\nartist: helen lin\n\ndescription: This soft sculpture painting was sewn together using digitally printed floral fabric. The fabric was cut up and rearranged into fleshy oyster bouquet, presents its treasured pearls to the viewer."
    },
    {
      "url": "assets/sm/milliondollarshirt.glb", 
@@ -52,7 +52,7 @@ let artworks = [
      "walltext": "title: million dollar shirtn\n\nartist: helen lin\n\ndescription: million dollar shirt is made with puff flowers and the spirit of friendship. You can't put a price on friendship, but if you did, it would be a million dollars."
    },
      {
-     "url": "assets/sm/shortcake.glb", 
+     "url": "assets/sm/shortcake-anim.glb", 
      "sizeX": 6,
      "sizeY": 6,
      "sizeZ": 6,
@@ -76,7 +76,7 @@ let artworks = [
      "walltext": "title: dottedfusign\n\nartist: helen lin\n\ndescription: Fu signs are traditionally displayed on the front doors of Chinese households to bring in prosperity. This interpretation renders the traditionally red signifier of prosperity into white, a color typically reserved for funeral rites."
    },
   {
-    "url": "assets/sm/canyougrab.glb", 
+    "url": "assets/sm/canyougrab-anim.glb", 
     "sizeX": 10,
     "sizeY": 10,
     "sizeZ": 10,
@@ -131,6 +131,8 @@ function addModels() {
       mesh.scale.set(artworks[i].sizeX, artworks[i].sizeY, artworks[i].sizeZ);
       mesh.rotation.y = THREE.MathUtils.degToRad(artworks[i].rotation);
       mesh.layers.enable(3);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
       scene.add(mesh);
     
     
@@ -353,6 +355,8 @@ function init() {
   // create the renderer which will actually draw our scene and add it to the document
   myRenderer = new THREE.WebGLRenderer();
   myRenderer.setSize(window.innerWidth, window.innerHeight);
+  myRenderer.shadowMap.enabled = true; // ✅ enable shadow maps
+  myRenderer.shadowMap.type = THREE.PCFSoftShadowMap; // optional: softer shadows
   document.body.appendChild(myRenderer.domElement);
 
   // create our camera
@@ -376,59 +380,48 @@ function init() {
 
 
   // walls and space
-  let wallGeo = new THREE.BoxGeometry(100,10,0.25);
-  let regMat = new THREE.MeshBasicMaterial({ color: 0xffeae0 });
+  let wallGeo = new THREE.BoxGeometry(100,15,0.25);
+  let regMat = new THREE.MeshStandardMaterial({ color: 0xffeae0 });
 
   let wallMesh1 = new THREE.Mesh(wallGeo, regMat);
   let wallMesh2 = new THREE.Mesh(wallGeo, regMat);
   wallMesh1.position.set(6,5,6);
   wallMesh2.position.set(6,5,-6);
 
-  let wallMesh2ExtendGeo = new THREE.BoxGeometry(20,10,0.25);
+  let wallMesh2ExtendGeo = new THREE.BoxGeometry(20,15,0.25);
   let wallMesh2Extend = new THREE.Mesh(wallMesh2ExtendGeo, regMat);
-  let vertMeshGeo = new THREE.BoxGeometry(0.25,10,20);
+  let vertMeshGeo = new THREE.BoxGeometry(0.25,15,20);
   let vertWallMesh1 = new THREE.Mesh(vertMeshGeo, regMat);
   let vertWallMesh2 = new THREE.Mesh(vertMeshGeo, regMat);  
   wallMesh2Extend.position.set(-50,5,6);
   vertWallMesh1.position.set(-44, 5, -16);
   vertWallMesh2.position.set(-56, 5, -16);
 
-  let backWallGeo = new THREE.BoxGeometry(0.25,10,20);
+  let backWallGeo = new THREE.BoxGeometry(0.25,15,20);
   let backWall1 = new THREE.Mesh(backWallGeo, regMat);
   let backWall2 = new THREE.Mesh(backWallGeo, regMat);
   backWall1.position.set(50,5,0);
   backWall2.position.set(-56,5,0);
 
-  let innerCylGeo = new THREE.CylinderGeometry(20, 20, 10, 45 );
+  let innerCylGeo = new THREE.CylinderGeometry(20, 20, 15, 45 );
   let innerCylMesh = new THREE.Mesh(innerCylGeo, regMat);
   innerCylMesh.position.set(-50, 5, -66);
 
-  let outerCylGeo = new THREE.CylinderGeometry(41, 41, 10, 45, 1,true
+  let outerCylGeo = new THREE.CylinderGeometry(41, 41, 15, 45, 1,true
   );
   let outerCylMesh = new THREE.Mesh(outerCylGeo, regMat);
   outerCylMesh.position.set(-50, 5, -66);
   outerCylMesh.rotation.set(0, Math.PI, 0);
 
-  wallMesh1.layers.enable(3);
-  wallMesh2.layers.enable(3);
-  wallMesh2Extend.layers.enable(3);
-  backWall1.layers.enable(3);
-  backWall2.layers.enable(3);
-  vertWallMesh1.layers.enable(3);
-  vertWallMesh2.layers.enable(3);  
-  innerCylMesh.layers.enable(3);  
-  outerCylMesh.layers.enable(3);  
-
-  scene.add(wallMesh1);
-  scene.add(wallMesh2);
-  scene.add(wallMesh2Extend);
-  scene.add(backWall1);
-  scene.add(backWall2);
-  scene.add(vertWallMesh1);
-  scene.add(vertWallMesh2);
-  scene.add(innerCylMesh);
-  scene.add(outerCylMesh);
-
+  [
+    wallMesh1, wallMesh2, wallMesh2Extend, vertWallMesh1, vertWallMesh2,
+    backWall1, backWall2, innerCylMesh, outerCylMesh
+  ].forEach(mesh => {
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.layers.enable(3);
+    scene.add(mesh);
+  });
 
 
   // Add artwork models
@@ -437,12 +430,23 @@ function init() {
   // add websocket support
   setupMySocket();
 
-  // try adding some lights
-  let ambientLight = new THREE.AmbientLight(0xf3f5d0);
+  // add some lights
+  let ambientLight = new THREE.AmbientLight(0xf3f5d0, 1); // reduce intensity a bit
   scene.add(ambientLight);
 
   // White directional light at half intensity shining from the top.
   let directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+  directionalLight.position.set(30, 50, 30);
+  directionalLight.castShadow = true;
+  directionalLight.shadow.mapSize.width = 2048;
+  directionalLight.shadow.mapSize.height = 2048;
+  directionalLight.shadow.camera.near = 0.5;
+  directionalLight.shadow.camera.far = 200;
+  directionalLight.shadow.camera.left = -100;
+  directionalLight.shadow.camera.right = 100;
+  directionalLight.shadow.camera.top = 100;
+  directionalLight.shadow.camera.bottom = -100;
+
   scene.add(directionalLight);
 
   window.addEventListener('keydown', onKeyDown);
