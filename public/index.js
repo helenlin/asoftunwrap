@@ -57,7 +57,7 @@ let artworks = [
      "sizeY": 6,
      "sizeZ": 6,
      "x": 20, 
-     "y": 2, 
+     "y": 0, 
      "z": -5, 
      "rotation": 0,
      "title": "you’re a shortcake and i am too", 
@@ -69,7 +69,7 @@ let artworks = [
      "sizeY": 10,
      "sizeZ": 10,
      "x": -10, 
-     "y": 1, 
+     "y": 0, 
      "z": 5, 
      "rotation": 180,
      "title": "dotted fu sign", 
@@ -77,11 +77,11 @@ let artworks = [
    },
   {
     "url": "assets/sm/canyougrab-anim.glb", 
-    "sizeX": 10,
-    "sizeY": 10,
-    "sizeZ": 10,
+    "sizeX": 14,
+    "sizeY": 14,
+    "sizeZ": 14,
     "x": -30, 
-    "y": 1, 
+    "y": 0, 
     "z": -5, 
     "rotation": 90,
     "title": "can you grab these on the way in, pt. i", 
@@ -431,7 +431,7 @@ function init() {
   setupMySocket();
 
   // add some lights
-  let ambientLight = new THREE.AmbientLight(0xf3f5d0, 1); // reduce intensity a bit
+  let ambientLight = new THREE.AmbientLight(0xf3f5d0, 3); // reduce intensity a bit
   scene.add(ambientLight);
 
   // White directional light at half intensity shining from the top.
